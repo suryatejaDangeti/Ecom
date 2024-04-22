@@ -2,7 +2,6 @@
 import Link from "@/node_modules/next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-// import Plp from "../plp/[...slug]/page"
 
 
 const Navbar = () => {
@@ -17,8 +16,9 @@ const Navbar = () => {
     const router = useRouter();
 
     const searchFunction = async (searchValue: any) => {
-        if(searchValue === "Enter" || searchValue === "click") {
-           console.log('called')
+        console.log(searchValue)
+        if((searchValue === "Enter" || searchValue === "click") && searchKeyword !== "") {
+                router.push(`/plp/${searchKeyword}`);
         }
 
     }
@@ -137,5 +137,22 @@ const Navbar = () => {
         </>
     )
 }
+
+export async function getStaticPropss(searchKeyword: any) {
+    // Call an external API endpoint to get posts.
+    // You can use any data fetching library
+    // const res = await fetch(`https://dummyjson.com/${searchKeyword}`);
+    const res = await fetch(`https://dummyjson.com/products`);
+    // const secres = await fetch(`https://dummyjson.com/${searchKeyword}/category=laptops`);
+    // const secposts = await secres.json();
+    // console.log(secposts, "secposts")
+    // const res = await fetch(`https://api.escuelajs.co/api/v1/products`);
+    const posts = await res.json();
+    console.log(posts)
+   
+    // By returning { props: { posts } }, the Blog component
+    // will receive `posts` as a prop at build time
+    return posts
+  }
 
 export default Navbar
