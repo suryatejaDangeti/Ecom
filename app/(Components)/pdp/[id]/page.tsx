@@ -1,16 +1,18 @@
 'use client'
 import { productDetail } from "@/app/_lib/client/client";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export default function Pdp(props: any) {
 
     const [product, setProduct]: any = useState({})
 
     const id = props.params.id;
-    (async () => {
-        const product = await productDetail(id);
-        setProduct(product);
-    })();
+    useEffect(() => {
+        (async () => {
+            const product = await productDetail(id);
+            setProduct(product);
+        })();
+    }, [product])
 
     const imageFunction = (imageDetails: any) => {
         return imageDetails?.map((image: string) => (
@@ -68,4 +70,4 @@ export default function Pdp(props: any) {
             </div>
         </>
     )
-  }
+}

@@ -1,17 +1,27 @@
 'use client'
 import { productsListing } from '@/app/_lib/client/client';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-const Plp = async (props: any) => {
+const Plp = (props: any) => {
+
+    const [listedProducts, setListedProducts] = useState([]);
 
     const route = useRouter();
     const pathParams = props.params.slug[0];
-    const { products }: any = await productsListing(pathParams);
-    const filteredProducts: any = products.filter((filteredProduct: any) => {
-        if (filteredProduct.category === pathParams) {
-            return filteredProduct  
-        }
-    })
+    useEffect(() => {
+        (async () => {
+            const { products }: any = await productsListing(pathParams);
+            const filteredProducts: any = products.filter((filteredProduct: any) => {
+                const lowerCaseProductCategory = filteredProduct.category.toLowerCase();
+                const lowerCasePathParams = pathParams.toLowerCase()
+                if (lowerCaseProductCategory === lowerCasePathParams) {
+                    return filteredProduct;
+                }
+            });
+            setListedProducts(filteredProducts);
+        })()
+    }, []);
 
     const discountPrice = (price: number, discountPercentage: number) => {
         let discountAmount: any = (discountPercentage/100) * price;
@@ -26,7 +36,7 @@ const Plp = async (props: any) => {
             </div>
             <ul className="flex flex-wrap">
                 {
-                    filteredProducts.map((product: any) => (
+                    listedProducts.map((product: any) => (
                         <li className="p-10 list-none m-4" key={product.id}
                             onClick={() => {
                                 route.push(`/pdp/${product.id}`)
